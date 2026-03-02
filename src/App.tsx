@@ -97,22 +97,10 @@ export default function App() {
           <div className="absolute top-0 left-0 w-full h-1 bg-indigo-600" />
           
           <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-8 items-end">
-            {/* Amount & From */}
+            {/* From Currency & Amount */}
             <div className="space-y-2">
-              <label className="text-xs font-bold uppercase tracking-wider text-gray-400 ml-1">Amount</label>
+              <label className="text-xs font-bold uppercase tracking-wider text-gray-400 ml-1">Currency from</label>
               <div className="relative">
-                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-medium">
-                  {fromInfo?.symbol}
-                </div>
-                <input 
-                  type="number"
-                  value={amount}
-                  onChange={(e) => setAmount(e.target.value)}
-                  className="w-full bg-gray-50 border-2 border-transparent focus:border-indigo-600 focus:bg-white rounded-2xl py-4 pl-10 pr-4 text-xl font-semibold transition-all outline-none"
-                  placeholder="0.00"
-                />
-              </div>
-              <div className="relative mt-4">
                 <select 
                   value={fromCurrency}
                   onChange={(e) => setFromCurrency(e.target.value)}
@@ -123,6 +111,21 @@ export default function App() {
                   ))}
                 </select>
                 <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none w-5 h-5" />
+              </div>
+              <div className="mt-4">
+                <label className="text-xs font-bold uppercase tracking-wider text-gray-400 ml-1">Amount</label>
+                <div className="relative mt-1">
+                  <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-medium">
+                    {fromInfo?.symbol}
+                  </div>
+                  <input 
+                    type="number"
+                    value={amount}
+                    onChange={(e) => setAmount(e.target.value)}
+                    className="w-full bg-gray-50 border-2 border-transparent focus:border-indigo-600 focus:bg-white rounded-2xl py-4 pl-10 pr-4 text-xl font-semibold transition-all outline-none"
+                    placeholder="0.00"
+                  />
+                </div>
               </div>
             </div>
 
@@ -138,7 +141,7 @@ export default function App() {
               </motion.button>
             </div>
 
-            {/* To Currency */}
+            {/* To Currency & Result */}
             <div className="space-y-2">
               <label className="text-xs font-bold uppercase tracking-wider text-gray-400 ml-1">Converted To</label>
               <div className="relative">
@@ -153,30 +156,36 @@ export default function App() {
                 </select>
                 <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none w-5 h-5" />
               </div>
-              <div className="mt-4 p-4 bg-indigo-50/50 rounded-2xl min-h-[68px] flex items-center">
-                <AnimatePresence mode="wait">
-                  {loading ? (
-                    <motion.div 
-                      key="loading"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      className="flex items-center gap-2 text-indigo-600 font-medium"
-                    >
-                      <RefreshCw className="w-4 h-4 animate-spin" />
-                      <span>Updating rates...</span>
-                    </motion.div>
-                  ) : result ? (
-                    <motion.div 
-                      key="result"
-                      initial={{ opacity: 0, x: 10 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      className="text-2xl font-bold text-indigo-900"
-                    >
-                      {toInfo?.symbol} {(Number(amount) * result.rate).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                    </motion.div>
-                  ) : null}
-                </AnimatePresence>
+              <div className="mt-4">
+                <label className="text-xs font-bold uppercase tracking-wider text-gray-400 ml-1">Converted Amount</label>
+                <div className="relative mt-1">
+                  <div className="w-full bg-indigo-50/50 border-2 border-transparent rounded-2xl py-4 px-4 text-xl font-bold text-indigo-900 min-h-[68px] flex items-center">
+                    <AnimatePresence mode="wait">
+                      {loading ? (
+                        <motion.div 
+                          key="loading"
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          exit={{ opacity: 0 }}
+                          className="flex items-center gap-2 text-indigo-600 font-medium text-base"
+                        >
+                          <RefreshCw className="w-4 h-4 animate-spin" />
+                          <span>Updating...</span>
+                        </motion.div>
+                      ) : result ? (
+                        <motion.div 
+                          key="result"
+                          initial={{ opacity: 0, x: 10 }}
+                          animate={{ opacity: 1, x: 0 }}
+                        >
+                          {toInfo?.symbol} {(Number(amount) * result.rate).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                        </motion.div>
+                      ) : (
+                        <span className="text-gray-300 text-base">0.00</span>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
